@@ -8,5 +8,13 @@ char *get_command();
 char *get_env_var(char *env_var, int value);
 char *construct_new_path(char *command_arg, char *path_dir);
 char *get_path(char *command_arg, char **env);
+typedef struct builtins
+{
+	char *name;
+	int (*func)(void);
+} builtin;
+
+int bin_exit(void);
+int bin_env(void);
 
 #endif

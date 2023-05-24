@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include "shell.h"
 
 /**
  * count_args - counts args in command for get_args() function

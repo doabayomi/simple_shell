@@ -13,7 +13,8 @@ char *get_command()
 	size_t command_buf_size = 0;
 	ssize_t command_strlen;
 
-	write(STDOUT_FILENO, "$ ", 3); /* prompt the user */
+	if (isatty(STDIN_FILENO)
+		write(STDOUT_FILENO, "$ ", 3); /* prompt the user */
 
 	/* get the user command with the number of chars read returned */
 	command_strlen = getline(&command, &command_buf_size, stdin);
