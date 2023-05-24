@@ -21,7 +21,7 @@ char *get_path_var(char **env)
 	for (; env[i] != NULL; i++)
 	{
 		var_name = get_env_var(env[i], 0);
-		if(strcmp(var_name, "PATH") == 0)
+		if (strcmp(var_name, "PATH") == 0)
 		{
 			free(var_name);
 			path = get_env_var(env[i], 1);

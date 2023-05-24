@@ -95,7 +95,7 @@ char **get_args(char *command, char *delimiter)
 	 * Another thing to consider is that this requires a mutable string input
 	 * to work. That means you can only pass a string of type char string[] or
 	 * the strdup of the string which must be freed later.
-	 * 
+	 *
 	 * C IS JUST MESSED UP.
 	*/
 	args[arg_count] = NULL; /* making last index NULL to close the array */
