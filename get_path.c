@@ -79,6 +79,9 @@ char *get_path(char *command_arg, char **env)
 	int i = 0;
 	struct stat file_stat;
 
+	if (stat(command_arg, &file_stat) == 0)
+		return (command_arg);
+
 	env_path_var = get_path_var(env);
 	if (env_path_var == NULL)
 		return (NULL);
