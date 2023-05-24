@@ -49,7 +49,7 @@ int main(int ac, char *av[], char *env[])
 		 * command is valid before calling fork.
 		 */
 		input_args = get_args(input, " "); /* splitting the input */
-		ret = get_builtin(argv[0])(); /* builtins checked */
+		ret = get_builtin(input_args[0])(); /* builtins checked */
 		if (ret == -1)
 			handle_cmd_error(input_args, input);
 
@@ -71,6 +71,9 @@ int main(int ac, char *av[], char *env[])
 		{
 			wait(&status);
 		}
+		free(input);
+		free(command);
+		free(input_args);
 	}
 	return (0);
 }
