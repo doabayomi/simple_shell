@@ -45,6 +45,7 @@ void free_all(char **args, char *input, char *path)
 void run_command(pid_t pid, char **input_args, char *input)
 {
 	char *command = NULL;
+	int status;
 
 	if (pid == -1) /* Error in pid */
 		handle_cmd_error(input_args, input);
@@ -78,7 +79,7 @@ void run_command(pid_t pid, char **input_args, char *input)
 int main(int ac, char *av[] __attribute__((unused)), char *env[])
 {
 	char *input = NULL, **input_args = NULL;
-	int status, ret = 0;
+	int ret = 0;
 	pid_t pid;
 	int (*builtin_func)(void);
 
