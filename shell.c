@@ -93,7 +93,7 @@ int main(int ac, char *av[] __attribute__((unused)), char *env[])
 		if (input == NULL) /* Checking NULL condition */
 			exit(EXIT_SUCCESS);
 
-		input_args = get_args(input, " "); /* splitting the input */
+		input_args = get_args(input, " \n"); /* splitting the input */
 		builtin_func = get_builtin(input_args[0]); /* builtins checked */
 		if (builtin_func != NULL)
 		{
