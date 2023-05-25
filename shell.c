@@ -40,9 +40,10 @@ void free_all(char **args, char *input, char *path)
  * run_command - performs execution on command
  * @input_args: return from get_args
  * @input: Input string
- * @command: Command to be made
+ * @pid: Process ID of current program
+ * @env: Environment variable
  */
-void run_command(pid_t pid, char **input_args, char *input, char *env[])
+void run_command(pid_t pid, char **input_args, char *input, char **env)
 {
 	char *command = NULL;
 	int status;
@@ -58,7 +59,7 @@ void run_command(pid_t pid, char **input_args, char *input, char *env[])
 		input_args[0] = command; /* changing args */
 
 		/* Run command */
-		execve(input_args[0], input_args, env);
+		execve(input_args[0], input_args, NULL);
 		free_all(input_args, input, command);
 		perror("./hsh");
 		exit(EXIT_FAILURE);
