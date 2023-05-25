@@ -56,10 +56,7 @@ int main(int ac, char *av[], char *env[])
 			continue; /* handling only new line input */
 		if (input == NULL) /* Checking NULL condition */
 			exit(EXIT_SUCCESS);
-		/**
-		 * The args are first checked with builtins and whether
-		 * they exist before forking.
-		 */
+
 		input_args = get_args(input, " "); /* splitting the input */
 		ret = get_builtin(input_args[0])(); /* builtins checked */
 		if (ret == -1)
@@ -77,6 +74,9 @@ int main(int ac, char *av[], char *env[])
 			input_args[0] = command; /* changing args */
 			/* Run command */
 			execve(input_args[0], input_args, NULL);
+			free_all(input_args, input, command);
+			perror("./hsh")
+			exit(EXIT_FAILURE);
 		}
 		else
 			wait(&status);
