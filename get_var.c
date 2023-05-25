@@ -23,7 +23,7 @@ char *get_env_var(char *env_var, int value)
 
 	if (env == NULL)
 	{
-		printf("Failed to extract variable name from the environment variable.\n");
+		perror("./hsh");
 		free(var);
 		return (NULL);
 	}

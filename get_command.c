@@ -25,6 +25,11 @@ char *get_command()
 		exit(EXIT_FAILURE);
 	}
 
+	if (command == EOF) /* Checking end of file condition */
+	{
+		free(command);
+		exit(EXIT_SUCCESS);
+	}
 	/**
 	 * NOTE: the string that is used to collect the command must be freed
 	 * using the free function. It is very important to avoid valgrind errors.

@@ -40,7 +40,7 @@ int main(int ac, char *av[], char *env[])
 		if (input == '\n')
 			continue; /* handling only new line input */
 
-		if (input == EOF) /* Checking end of file condition */
+		if (input == NULL) /* Checking NULL condition */
 			exit(EXIT_SUCCESS);
 
 		/**

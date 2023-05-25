@@ -55,9 +55,11 @@ int (*get_builtin(char *cmd))(void)
 	 * Checks through each builtin to compare name and returns
 	 * one that matches
 	 */
-	for (i = 0; bins[i].name = NULL, i++)
+	for (i = 0; bins[i].name != NULL, i++)
 	{
 		if (_strcmp(input_args[0], bins[i].name) == 0)
 			return (bins[i].func);
 	}
+
+	return (NULL);
 }
