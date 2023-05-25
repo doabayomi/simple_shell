@@ -42,19 +42,29 @@ void free_all(char **args, char *input, char *path)
  * @input: Input string
  * @command: Command to be made
  */
-void run_command(char **input_args, char *input, char *command)
+void run_command(pid_t pid, char **input_args, char *input)
 {
-	command = get_path(input_args[0], env);
-	if (command == NULL)
+	char *command = NULL;
+
+	if (pid == -1) /* Error in pid */
 		handle_cmd_error(input_args, input);
+	else if (pid == 0)
+	{
+		command = get_path(input_args[0], env);
+		if (command == NULL)
+			handle_cmd_error(input_args, input);
 
-	input_args[0] = command; /* changing args */
+		input_args[0] = command; /* changing args */
 
-	/* Run command */
-	execve(input_args[0], input_args, NULL);
+		/* Run command */
+		execve(input_args[0], input_args, NULL);
+		free_all(input_args, input, command);
+		perror("./hsh");
+		exit(EXIT_FAILURE);
+	}
+	else
+		wait(&status);
 	free_all(input_args, input, command);
-	perror("./hsh");
-	exit(EXIT_FAILURE);
 }
 
 /**
@@ -67,7 +77,7 @@ void run_command(char **input_args, char *input, char *command)
  */
 int main(int ac, char *av[] __attribute__((unused)), char *env[])
 {
-	char *input = NULL, *command = NULL, **input_args = NULL;
+	char *input = NULL, **input_args = NULL;
 	int status, ret = 0;
 	pid_t pid;
 	int (*builtin_func)(void);
@@ -91,13 +101,7 @@ int main(int ac, char *av[] __attribute__((unused)), char *env[])
 		}
 
 		pid = fork();
-		if (pid == -1) /* Error in pid */
-			handle_cmd_error(input_args, input);
-		else if (pid == 0)
-			run_command(input_args, input, command);
-		else
-			wait(&status);
-		free_all(input_args, input, command);
+		run_command(pid, input_args, input);
 	}
 	return (0);
 }
