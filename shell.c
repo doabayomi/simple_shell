@@ -80,14 +80,13 @@ void run_command(pid_t pid, char **input_args, char *input, char **env)
 int main(int ac, char *av[] __attribute__((unused)), char *env[])
 {
 	char *input = NULL, **input_args = NULL;
-	int ret = 0, is_interactive = isatty(STDIN_FILENO);
+	int ret = 0, is_interactive = ac;
 	pid_t pid;
 	int (*builtin_func)(void);
 
-	(void)ac;
 	while (1)
 	{
-		if (is_interactive)
+		if (is_interactive == 1)
 		{
 			input = get_cmd_interactive();
 			if (input[0] == '\0')
