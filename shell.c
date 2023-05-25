@@ -20,6 +20,22 @@ void handle_cmd_error(char **args, char *input)
 }
 
 /**
+ * free-all - frees all the variables uses
+ * @args: From get_args
+ * @input: From get_command
+ * @path: From get_path
+ */
+void free_all(char **args, char *input, char *path)
+{
+	if (args != NULL)
+		free(args);
+	if (input != NULL)
+		free(input);
+	if (path != NULL)
+		free(path);
+}
+
+/**
  * main - Main shell container
  * @ac: No of arguments
  * @av: Argument list
@@ -29,9 +45,8 @@ void handle_cmd_error(char **args, char *input)
  */
 int main(int ac, char *av[], char *env[])
 {
-	char *input, *command;
-	char **input_args;
-	int has_path, status, ret = 0;
+	char *input, *command, **input_args;
+	int status, ret = 0;
 	pid_t pid;
 
 	while (1)
@@ -39,14 +54,11 @@ int main(int ac, char *av[], char *env[])
 		input = get_command();
 		if (input == '\n')
 			continue; /* handling only new line input */
-
 		if (input == NULL) /* Checking NULL condition */
 			exit(EXIT_SUCCESS);
-
 		/**
-		 * The string is first broken by space using get_args and then
-		 * first checked alongside builtins and also along whether the
-		 * command is valid before calling fork.
+		 * The args are first checked with builtins and whether
+		 * they exist before forking.
 		 */
 		input_args = get_args(input, " "); /* splitting the input */
 		ret = get_builtin(input_args[0])(); /* builtins checked */
@@ -62,18 +74,13 @@ int main(int ac, char *av[], char *env[])
 			command = get_path(input_args[0]);
 			if (command == NULL)
 				handle_cmd_error(input_args, input);
-
-			input_args[0] = command;
+			input_args[0] = command; /* changing args */
 			/* Run command */
 			execve(input_args[0], input_args, NULL);
 		}
 		else
-		{
 			wait(&status);
-		}
-		free(input);
-		free(command);
-		free(input_args);
+		free_all(input_args, input, command);
 	}
 	return (0);
 }
