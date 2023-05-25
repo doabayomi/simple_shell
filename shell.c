@@ -95,7 +95,10 @@ int main(int ac, char *av[] __attribute__((unused)), char *env[])
 				exit(EXIT_SUCCESS);
 		}
 		else
+		{
+			printf("Not interactive\n");
 			input = get_cmd_non_interactive();
+		}
 
 		input_args = get_args(input, " \n"); /* splitting the input */
 		builtin_func = get_builtin(input_args[0]); /* builtins checked */
@@ -108,6 +111,8 @@ int main(int ac, char *av[] __attribute__((unused)), char *env[])
 
 		pid = fork();
 		run_command(pid, input_args, input, env);
+		if (is_interactive != 1)
+			break;
 	}
 	return (0);
 }
