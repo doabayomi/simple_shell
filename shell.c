@@ -20,7 +20,7 @@ void handle_cmd_error(char **args, char *input)
 }
 
 /**
- * free-all - frees all the variables uses
+ * free_all - frees all the variables uses
  * @args: From get_args
  * @input: From get_command
  * @path: From get_path
