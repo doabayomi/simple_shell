@@ -8,7 +8,7 @@
  * Return: 0 on success and -1 on faliure
  */
 
-int _putenv(char *evs)
+int _putenv(char *es)
 {
 	char **_environ = environ, **newenviron, **_newenviron;
 	int l = 0;
@@ -25,9 +25,9 @@ int _putenv(char *evs)
 		_strcpy(*_newenviron, *_environ);
 		_newenviron++, _environ++, l--;
 	}
-	*_newenviron = _malloc(sizeof(char) * _strlen(evs) + 4);
-	_strcpy(*_newenviron, evs);
-	free(evs);
+	*_newenviron = _malloc(sizeof(char) * _strlen(es) + 4);
+	_strcpy(*_newenviron, es);
+	free(es);
 	_newenviron++;
 	*_newenviron = NULL;
 	free_pp(environ);

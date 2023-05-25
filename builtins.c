@@ -9,7 +9,7 @@
 
 int handle_exit(char **cmd)
 {
-	int exitstatus = 0, k= 0, str_in = 0;
+	int exitstatus = 0, k = 0, str_in = 0;
 	char *msg, *tail;
 
 	if (cmd[1])

@@ -6,22 +6,22 @@
  * Return: integer
  */
 
-int _atoi(char *str)
+int _atoi(char *s)
 {
 	unsigned int n = 0, sign = 1, started = 0;
 
-	while (*str)
+	while (*s)
 	{
-		if (started && !(*str >= '0' && *str <= '9'))
+		if (started && !(*s >= '0' && *s <= '9'))
 			break;
-		if (*str == '-')
+		if (*s == '-')
 			sign *= -1;
-		if ((*str >= '0' && *str <= '9'))
+		if ((*s >= '0' && *s <= '9'))
 		{
 			started = 1;
-			n =  n * 10 + (int)*str - 48;
+			n =  n * 10 + (int)*s - 48;
 		}
-		str++;
+		s++;
 	}
 	return (sign * n);
 }

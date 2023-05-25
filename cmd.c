@@ -11,6 +11,7 @@ int _chdir(char *path)
 	int stat, exitstat = 0;
 	char *currentdir = _getenv("PWD"), *buf = NULL, *cdir, *msg;
 	char *tail;
+	int len;
 	size_t size = 0;
 
 	if (!path || !_strcmp(path, "~"))
@@ -22,7 +23,8 @@ int _chdir(char *path)
 	if (stat < 0)
 	{
 		errno = -3;
-		msg = _malloc(_strlen("No such file or directory exist") + _strlen(path) + 4);
+		len = _strlen("No such file or directory exist");
+		msg = _malloc(len + _strlen(path) + 4);
 		_strcpy(msg, "No such file or directory exist ");
 		tail = _malloc(_strlen("cd: ") + _strlen(path) + 4);
 		_strcpy(tail, "cd: "), _strcat(tail, path);
