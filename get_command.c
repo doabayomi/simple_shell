@@ -13,7 +13,7 @@ char *get_command()
 	size_t command_buf_size = 0;
 	ssize_t command_strlen;
 
-	if (isatty(STDIN_FILENO)
+	if (isatty(STDIN_FILENO))
 		write(STDOUT_FILENO, "$ ", 3); /* prompt the user */
 
 	/* get the user command with the number of chars read returned */
@@ -25,10 +25,16 @@ char *get_command()
 		exit(EXIT_FAILURE);
 	}
 
-	if (command == EOF) /* Checking end of file condition */
+	if (command == NULL) /* Checking end of file condition */
 	{
 		free(command);
 		exit(EXIT_SUCCESS);
+	}
+
+	if (command[0] == '\n')
+	{
+		free(command);
+		return ("");
 	}
 	/**
 	 * NOTE: the string that is used to collect the command must be freed

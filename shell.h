@@ -16,5 +16,6 @@ typedef struct builtins
 
 int bin_exit(void);
 int bin_env(void);
+int (*get_builtin(char *cmd))(void);
 
 #endif

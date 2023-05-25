@@ -46,8 +46,8 @@ int (*get_builtin(char *cmd))(void)
 {
 	int i;
 	builtin bins[] = {
-		{"exit", bin_exit()},
-		{"env", bin_env()},
+		{"exit", bin_exit},
+		{"env", bin_env},
 		{NULL, NULL}
 	};
 
@@ -55,9 +55,9 @@ int (*get_builtin(char *cmd))(void)
 	 * Checks through each builtin to compare name and returns
 	 * one that matches
 	 */
-	for (i = 0; bins[i].name != NULL, i++)
+	for (i = 0; bins[i].name != NULL; i++)
 	{
-		if (_strcmp(input_args[0], bins[i].name) == 0)
+		if (_strcmp(cmd, bins[i].name) == 0)
 			return (bins[i].func);
 	}
 
