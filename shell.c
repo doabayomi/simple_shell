@@ -42,7 +42,7 @@ void free_all(char **args, char *input, char *path)
  * @input: Input string
  * @command: Command to be made
  */
-void run_command(pid_t pid, char **input_args, char *input)
+void run_command(pid_t pid, char **input_args, char *input, char *env[])
 {
 	char *command = NULL;
 	int status;
@@ -58,7 +58,7 @@ void run_command(pid_t pid, char **input_args, char *input)
 		input_args[0] = command; /* changing args */
 
 		/* Run command */
-		execve(input_args[0], input_args, NULL);
+		execve(input_args[0], input_args, env);
 		free_all(input_args, input, command);
 		perror("./hsh");
 		exit(EXIT_FAILURE);
@@ -102,7 +102,7 @@ int main(int ac, char *av[] __attribute__((unused)), char *env[])
 		}
 
 		pid = fork();
-		run_command(pid, input_args, input);
+		run_command(pid, input_args, input, env);
 	}
 	return (0);
 }
