@@ -40,9 +40,10 @@ void free_all(char **args, char *input, char *path)
  * run_command - performs execution on command
  * @input_args: return from get_args
  * @input: Input string
- * @command: Command to be made
+ * @pid: Process ID of current program
+ * @env: Environment variable
  */
-void run_command(pid_t pid, char **input_args, char *input, char *env[])
+void run_command(pid_t pid, char **input_args, char *input, char **env)
 {
 	char *command = NULL;
 	int status;
@@ -79,20 +80,24 @@ void run_command(pid_t pid, char **input_args, char *input, char *env[])
 int main(int ac, char *av[] __attribute__((unused)), char *env[])
 {
 	char *input = NULL, **input_args = NULL;
-	int ret = 0;
+	int ret = 0, is_interactive = ac;
 	pid_t pid;
 	int (*builtin_func)(void);
 
-	(void)ac;
 	while (1)
 	{
-		input = get_command();
-		if (input[0] == '\0')
-			continue;
-		if (input == NULL) /* Checking NULL condition */
-			exit(EXIT_SUCCESS);
+		if (is_interactive == 1)
+		{
+			input = get_cmd_interactive();
+			if (input[0] == '\0')
+				continue;
+			if (input == NULL) /* Checking NULL condition */
+				exit(EXIT_SUCCESS);
+		}
+		else
+			input = get_cmd_non_interactive();
 
-		input_args = get_args(input, " "); /* splitting the input */
+		input_args = get_args(input, " \n"); /* splitting the input */
 		builtin_func = get_builtin(input_args[0]); /* builtins checked */
 		if (builtin_func != NULL)
 		{
