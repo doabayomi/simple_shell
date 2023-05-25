@@ -59,7 +59,7 @@ void run_command(pid_t pid, char **input_args, char *input, char **env)
 		input_args[0] = command; /* changing args */
 
 		/* Run command */
-		execve(input_args[0], input_args, NULL);
+		execve(input_args[0], input_args, env);
 		free_all(input_args, input, command);
 		perror("./hsh");
 		exit(EXIT_FAILURE);
