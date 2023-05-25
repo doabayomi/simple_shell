@@ -80,18 +80,23 @@ void run_command(pid_t pid, char **input_args, char *input, char **env)
 int main(int ac, char *av[] __attribute__((unused)), char *env[])
 {
 	char *input = NULL, **input_args = NULL;
-	int ret = 0;
+	int ret = 0, is_interactive = isatty(STDIN_FILENO);
 	pid_t pid;
 	int (*builtin_func)(void);
 
 	(void)ac;
 	while (1)
 	{
-		input = get_command();
-		if (input[0] == '\0')
-			continue;
-		if (input == NULL) /* Checking NULL condition */
-			exit(EXIT_SUCCESS);
+		if (is_interactive)
+		{
+			input = get_cmd_interactive();
+			if (input[0] == '\0')
+				continue;
+			if (input == NULL) /* Checking NULL condition */
+				exit(EXIT_SUCCESS);
+		}
+		else
+			input = get_cmd_non_interactive();
 
 		input_args = get_args(input, " \n"); /* splitting the input */
 		builtin_func = get_builtin(input_args[0]); /* builtins checked */

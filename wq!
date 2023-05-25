@@ -7,8 +7,7 @@
  *
  * Return: input command.
  */
-char *get_cmd_interactive()
-{
+char *get_cmd_interactive(){
 	char *command = NULL;
 	size_t command_buf_size = 0;
 	ssize_t command_strlen;
@@ -36,7 +35,7 @@ char *get_cmd_interactive()
 		return ("");
 	}
 
-	return (command);
+	return (*command);
 }
 
 /**
@@ -44,8 +43,7 @@ char *get_cmd_interactive()
  *
  * Return: input command.
 */
-char *get_cmd_non_interactive()
-{
+char *get_cmd_non_interactive {
 	char *command = NULL;
 	size_t command_buf_size = 0;
 	ssize_t command_strlen;
@@ -59,7 +57,7 @@ char *get_cmd_non_interactive()
 		exit(EXIT_FAILURE);
 	}
 
-	return (command);
+	return(command);
 }
 
 /**
