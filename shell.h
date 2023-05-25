@@ -8,6 +8,12 @@ char *get_command();
 char *get_env_var(char *env_var, int value);
 char *construct_new_path(char *command_arg, char *path_dir);
 char *get_path(char *command_arg, char **env);
+
+/**
+ * struct builtins - The builtin implementation for the shell
+ * @name: Name of the builtin
+ * @func: The pointer to the builtin function implementation
+ */
 typedef struct builtins
 {
 	char *name;
