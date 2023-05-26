@@ -6,13 +6,15 @@
  *
  * Return: the value of the PATH variable, NULL otherwise
  */
-char *get_path_var(char **env) {
+char *get_path_var(char **env)
+{
 	int i = 0;
 
 	if (env == NULL)
-		return NULL;
+		return (NULL);
 
-	while (env[i] != NULL) {
+	while (env[i] != NULL)
+	{
 		if (strncmp(env[i], "PATH=", 5) == 0)
 			return (env[i] + 5);
 		/* skipping PATH= and returning the variable */

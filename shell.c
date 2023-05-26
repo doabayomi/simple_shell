@@ -23,8 +23,9 @@ void handle_error(char *error, char **args, char *input, int arg_count)
  * exec_command - handles the execution of the input command
  * @args: Return from get_args()
  * @input: Return from get_input
- * @arg_count: Return from count_args
- * @cmd_path: Where the return from get_path will be stored
+ * @count: Return from count_args
+ * @path: Where the return from get_path will be stored
+ * @env: The current environment;
  */
 void exec_command(char **args, char *input, int count, char *path, char **env)
 {
