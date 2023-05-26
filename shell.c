@@ -20,6 +20,27 @@ void handle_error(char *error, char **args, char *input, int arg_count)
 }
 
 /**
+ * is_whitespace - checks if the input is basically all spaces
+ * @input - Input string
+ *
+ * Return: 0 if not whitespace, 1 if whitespace
+ */
+int is_whitespace(char *input)
+{
+	int i;
+
+	for (i = 0; input[i] != '\0'; i++)
+	{
+		if (input[i] != ' ' && input[i] != '\t' && input[i] != '\n' &&
+			input[i] != '\v' && input[i] != '\f' && input[i] != '\r')
+		{
+			return (0); /* is not whitespace */
+		}
+	}
+	return (1); /* is whitespace */
+}
+
+/**
  * exec_command - handles the execution of the input command
  * @args: Return from get_args()
  * @input: Return from get_input
@@ -74,6 +95,8 @@ void handle_non_interactive(char **env)
 			continue;
 
 		input[read_count - 1] = '\0';
+		if (is_whitespace(input))
+			continue;
 
 		arg_count = count_args(input, " \n");
 		args = get_args(input, " \n");
@@ -118,6 +141,8 @@ int main(int ac, char **av, char *env[])
 
 			input = get_input();
 			if (input[0] == '\n')
+				continue;
+			if (is_whitespace(input))
 				continue;
 
 			arg_count = count_args(input, " \n");
