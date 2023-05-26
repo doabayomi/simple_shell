@@ -1,118 +1,143 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include "shell.h"
 
 /**
- * handle_cmd_error - handles the errors in main shell container.
- * @args: Argument list to be freed.
- * @input: input from get_command to be freed
+ * handle_error - handles errors in function calls
+ * @error: Error message
+ * @args: Array from get_args()
+ * @input: The return value of get_input();
+ * @arg_count: The return value of arg_count
  */
-void handle_cmd_error(char **args, char *input)
+void handle_error(char *error, char **args, char *input, int arg_count)
 {
-	free(args); /* freeing return value of get_args */
-	free(input); /* freeing return value of get_command */
-	perror("./hsh: ");
+	perror(error);
+	if (args != NULL || arg_count == -1)
+	{
+		free_args(args, arg_count);
+	}
+	if (input != NULL)
+		free(input);
 	exit(EXIT_FAILURE);
 }
 
 /**
- * free_all - frees all the variables uses
- * @args: From get_args
- * @input: From get_command
- * @path: From get_path
+ * exec_command - handles the execution of the input command
+ * @args: Return from get_args()
+ * @input: Return from get_input
+ * @arg_count: Return from count_args
+ * @cmd_path: Where the return from get_path will be stored
  */
-void free_all(char **args, char *input, char *path)
+void exec_command(char **args, char *input, int count, char *path, char **env)
 {
-	if (args != NULL)
-		free(args);
-	if (input != NULL)
-		free(input);
-	if (path != NULL)
-		free(path);
-}
+	pid_t pid;
+	int ret, status;
 
-/**
- * run_command - performs execution on command
- * @input_args: return from get_args
- * @input: Input string
- * @pid: Process ID of current program
- * @env: Environment variable
- */
-void run_command(pid_t pid, char **input_args, char *input, char **env)
-{
-	char *command = NULL;
-	int status;
-
-	if (pid == -1) /* Error in pid */
-		handle_cmd_error(input_args, input);
+	pid = fork();
+	if (pid == -1)
+		handle_error("pid_error", args, input, count);
 	else if (pid == 0)
 	{
-		command = get_path(input_args[0], env);
-		if (command == NULL)
-			handle_cmd_error(input_args, input);
+		path = get_path(args[0], env);
+		if (path == NULL)
+			handle_error("path failed", args, input, count);
 
-		input_args[0] = command; /* changing args */
-
-		/* Run command */
-		execve(input_args[0], input_args, env);
-		free_all(input_args, input, command);
-		perror("./hsh");
-		exit(EXIT_FAILURE);
+		args[0] = path;
+		ret = execve(args[0], args, env);
+		if (ret == -1)
+		{
+			free(path);
+			handle_error("exec failed", args, input, count);
+		}
 	}
 	else
 		wait(&status);
-	free_all(input_args, input, command);
 }
 
 /**
- * main - Main shell container
- * @ac: No of arguments
- * @av: Argument list
- * @env: Environment variable of program.
+ * handle_non_interactive - Handles the non interactive state
+ * @env: environment variable
+ */
+void handle_non_interactive(char **env)
+{
+	char *input, **args, *cmd_path = NULL;
+	int arg_count = 0;
+	size_t bufsize = MAX_INPUT_SIZE;
+	ssize_t read_count;
+
+	input = malloc(bufsize);
+	if (input == NULL)
+		handle_error("malloc failed", NULL, NULL, -1);
+
+	while ((read_count = getline(&input, &bufsize, stdin)) != -1)
+	{
+		if (input[0] == '\n')
+			continue;
+
+		input[read_count - 1] = '\0';
+
+		arg_count = count_args(input, " \n");
+		args = get_args(input, " \n");
+		if (args == NULL)
+			handle_error("get_args failed", NULL, input, -1);
+
+		if (strcmp("exit", args[0]) == 0)
+		{
+			free_args(args, arg_count);
+			free(input);
+			exit(EXIT_SUCCESS);
+		}
+
+		exec_command(args, input, arg_count, cmd_path, env);
+		free(cmd_path);
+		free_args(args, arg_count);
+	}
+
+	free(input);
+}
+
+/**
+ * main - The main shell container
+ * @ac: The number of arguments
+ * @av: The array of arguments
+ * @env: The environment variable
  *
  * Return: 0
  */
-int main(int ac, char *av[] __attribute__((unused)), char *env[])
+int main(int ac, char **av, char *env[])
 {
-	char *input = NULL, **input_args = NULL;
-	int ret = 0, is_interactive = ac;
-	pid_t pid;
-	int (*builtin_func)(void);
+	char *input, **args, *cmd_path = NULL;
+	int arg_count = 0, is_interactive = isatty(STDIN_FILENO);
 
-	while (1)
+	(void)ac;
+	(void)av;
+	if (is_interactive)
 	{
-		if (is_interactive == 1)
+		while (1)
 		{
-			input = get_cmd_interactive();
-			if (input[0] == '\0')
+			write(STDOUT_FILENO, "$ ", 2);
+
+			input = get_input();
+			if (input[0] == '\n')
 				continue;
-			if (input == NULL) /* Checking NULL condition */
+
+			arg_count = count_args(input, " \n");
+			args = get_args(input, " \n");
+			if (args == NULL)
+				handle_error("get_args", NULL, input, -1);
+			/* handling the exit command */
+			if (strcmp("exit", args[0]) == 0)
+			{
+				free_args(args, arg_count);
+				free(input);
 				exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			printf("Not interactive\n");
-			input = get_cmd_non_interactive();
-		}
+			}
 
-		input_args = get_args(input, " \n"); /* splitting the input */
-		builtin_func = get_builtin(input_args[0]); /* builtins checked */
-		if (builtin_func != NULL)
-		{
-			ret = builtin_func();
-			if (ret == -1)
-				handle_cmd_error(input_args, input);
+			exec_command(args, input, arg_count, cmd_path, env);
+			free(cmd_path);
+			free(input);
+			free_args(args, arg_count);
 		}
-
-		pid = fork();
-		run_command(pid, input_args, input, env);
-		if (is_interactive != 1)
-			break;
 	}
+	else
+		handle_non_interactive(env);
 	return (0);
 }

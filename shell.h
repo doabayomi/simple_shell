@@ -1,29 +1,22 @@
 #ifndef SHELL_H_
 #define SHELL_H_
 
-int _strcmp(char *first, char *second);
-char **get_args(char *command, char *delimiter);
-int count_args(char *command, char *delimiter);
-char *get_cmd_interactive();
-char *get_cmd_non_interactive();
-char *get_command();
-char *get_env_var(char *env_var, int value);
-char *construct_new_path(char *command_arg, char *path_dir);
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+char *get_input();
+int count_args(char *input, char *delimiter);
+char **get_args(char *input, char *delimiter);
+void free_args(char **args, int arg_count);
+char *get_path_var(char **env);
+char *create_path(char *command_arg, char *path_dir);
 char *get_path(char *command_arg, char **env);
 
-/**
- * struct builtins - The builtin implementation for the shell
- * @name: Name of the builtin
- * @func: The pointer to the builtin function implementation
- */
-typedef struct builtins
-{
-	char *name;
-	int (*func)(void);
-} builtin;
+#define MAX_INPUT_SIZE 1024
 
-int bin_exit(void);
-int bin_env(void);
-int (*get_builtin(char *cmd))(void);
-
-#endif
+#endif /* SHELL_H_ */
