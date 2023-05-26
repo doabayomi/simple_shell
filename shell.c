@@ -21,7 +21,7 @@ void handle_error(char *error, char **args, char *input, int arg_count)
 
 /**
  * is_whitespace - checks if the input is basically all spaces
- * @input - Input string
+ * @input: Input string
  *
  * Return: 0 if not whitespace, 1 if whitespace
  */
