@@ -18,7 +18,9 @@ char *get_path_var(char **env)
 		if (strncmp(env[i], "PATH=", 5) == 0)
 			return (env[i] + 5);
 		/* skipping PATH= and returning the variable */
-
+		if (strncmp(env[i], "PATH1=", 6) == 0)
+			return (env[i] + 6);
+		/* clearing the case if PATH variable is renamed */
 		i++;
 	}
 
